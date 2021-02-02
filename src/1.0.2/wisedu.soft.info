@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<product>
+    <id>CASP-PORTAL</id>
+    <name>应用服务平台-门户</name>
+    <version>3.1</version>
+    <publishTime>2021-02-01 13:02:39</publishTime>
+    <description>应用服务平台-门户引擎包含pc和h5</description>
+    <modules> 
+        <module>
+            <name>casp-portal</name>
+            <version>1.0.2</version>
+            <properties>
+				<group name="对外域名">
+                    <property key="module.domain" name="系统域名"/>
+                </group>
+                <group name="数据库配置">
+                    <property key="spring.datasource.url" name="地址">jdbc:oracle:thin:@{ip}:{port}:{sid}</property>
+                    <property key="spring.datasource.username" name="用户名"/>
+                    <property key="spring.datasource.password" name="密码" isPwd="true"/>
+                    <property key="spring.datasource.driver-class-name" name="驱动">oracle.jdbc.OracleDriver</property>
+                </group>
+                <group name="预制的配置" isHidden="true">
+                    <property key="server.servlet.context-path" name="上下文"/>
+                    <property key="server.port" name="端口">8116</property>
+                </group>
+				 <group name="cas认证配置">
+					<property key="cas.integrated" name="cas集成方式 proxy：反向代理;cas：cas原生集成">cas</property>
+                </group>
+            </properties>
+            <install>install-casp-portal.yml</install>
+        </module>
+    </modules>
+    <deployschemes>
+        <scheme>
+            <id>least</id>
+            <name>最小</name>
+            <description>功能验证</description>
+            <resource>
+                <server>1</server>
+                <memory>8</memory>
+                <disk>50</disk>
+            </resource>
+			   <dependDeploy/>
+        
+			<deploy>
+                <module name="casp-portal" jvm="256" nodes="1"/>
+            </deploy>
+        </scheme>
+        <scheme>
+            <id>small</id>
+            <name>小型</name>
+            <description>生产(2万用户)</description>
+            <resource>
+                <server>2</server>
+                <memory>8</memory>
+                <disk>80</disk>
+            </resource>
+            <dependDeploy/>
+            <deploy>
+                <module name="casp-portal" jvm="1024" nodes="2"/>
+            </deploy>
+        </scheme>
+        <scheme>
+            <id>middle</id>
+            <name>中型</name>
+            <description>生产(5万用户)</description>
+            <resource>
+                <server>3</server>
+                <memory>8</memory>
+                <disk>500</disk>
+            </resource>	
+			 <dependDeploy/>
+            <deploy>
+                <module name="casp-portal" jvm="2048" nodes="2"/>
+            </deploy>
+        </scheme>
+    </deployschemes>
+</product>

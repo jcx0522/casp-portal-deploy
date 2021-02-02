@@ -1,0 +1,17 @@
+version: "3"
+services:
+  casp-portal:
+    image:  172.16.9.100:5000/minos/casp-portal-webapps:1.0.2-SNAPSHOT
+    container_name: casp-portal
+    network_mode: "host"
+    environment: 
+      jvmUnitSize: {{jvmSize}}
+    restart: always
+    privileged: true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /opt/minos/settings/:/opt/settings/
+      - /opt/minos/logs/casp-portal-webapps/:/opt/logs/casp-portal-webapps/
+      - /opt/minos/casp-portal-webapps/cards/custom/:/opt/casp-portal-webapps/cards/custom/
+      - /opt/minos/casp-portal-webapps/templates/custom/:/opt/casp-portal-webapps/templates/custom/
+      - /opt/minos/casp-portal-webapps/upLoadFiles/:/opt/casp-portal-webapps/upLoadFiles/

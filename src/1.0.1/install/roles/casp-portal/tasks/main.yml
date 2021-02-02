@@ -1,0 +1,53 @@
+---
+# tasks file for minos-cache
+  - name: step1 - create product folder
+    file:
+      path: /opt/product/casp-portal/
+      state: directory
+      mode: "0755"
+    tags: install
+
+  - name: step1 - create product folder
+    file:
+      path: /opt/product/backup/casp-portal/{{version}}
+      state: directory
+      mode: "0755"
+    tags: install,upgrade
+
+  - name: step1 - stop old docker containers
+    docker_compose:
+      state: absent
+      project_src: /opt/product/casp-portal
+    tags: upgrade
+
+  - name: step2 - mv previous product to back
+    shell: "find /opt/product/casp-portal/ -type f  | xargs  -I  '{}'  mv -f  {} /opt/product/backup/casp-portal/{{version}}"
+    tags: install,upgrade
+
+  - name: step2 - copy product files
+    copy: 
+      src: casp-portal-{{version}}.tar
+      dest: /opt/product/casp-portal/casp-portal-{{version}}.tar
+    tags: install, upgrade
+
+  - name: step3 - copy product control file
+    template: 
+      src: docker-compose.yml
+      dest: "/opt/product/casp-portal/docker-compose.yml"
+      mode: "0755"
+    tags: install, upgrade
+
+  - name: step4 - install product 
+    docker_image:
+      name: casp-portal
+      load_path: /opt/product/casp-portal/casp-portal-{{version}}.tar
+      tag: v1
+      source: load
+    tags: install, upgrade
+
+  - name: step5 - change firewall rules
+    firewalld:
+      port: 8116/tcp
+      permanent: yes
+      state: enabled
+    tags: install,upgrade

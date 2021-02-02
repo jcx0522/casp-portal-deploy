@@ -1,0 +1,20 @@
+---
+  - hosts: all
+    remote_user: root
+    vars: 
+      deployAddress: http://gateway.wisedu.com
+      jvmSize: 256
+      version: 1.0.1
+    tasks: 
+      - name: stop casp-portal service ...
+        docker_compose:
+          state: absent
+          project_src: /opt/product/casp-portal
+        tags: stop, start, upgrade
+      - name: start casp-portal service ...
+        docker_compose:
+          state: present
+          project_src: /opt/product/casp-portal
+        tags: start, install, upgrade
+    roles:
+      - casp-portal
